@@ -9,7 +9,7 @@
 
 线程池的真正实现，它的构造方法提供了一系列参数来配置线程池。
 
-**corePoolSize**：核心线程数（CPU核心数+1）
+**corePoolSize**：核心线程数（CPU核心数+1)
 **maximumPoolSize**：最大线程数（CUP核心数×2+1）
 **keepAliveTime**：非核心线程闲置的超时时长（1秒）
 **unit**：指定keepAliveTime的时间单位
