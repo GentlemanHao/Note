@@ -13,7 +13,7 @@ InputFilter.LengthFilter(max)
 editText.setFilters(filter : Array<InputFilter>)
 ~~~
 
-Update SpellCheck
+#### Update SpellCheck
 
 **使用反射调用`TextView`中`Editor`的`updateSpellCheckSpans`**
 
