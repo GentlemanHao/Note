@@ -16,3 +16,7 @@ fun ScrollToPositionCenter(position: Int) {
     }
 ~~~
 
+
+
+https://stackoverflow.com/questions/38416146/recyclerview-smoothscroll-to-position-in-the-center-android
+
