@@ -211,9 +211,167 @@ public E get(int index) {
 }
 ~~~
 
+### 三、LinkedList
 
+链表是由一系列非连续的节点组成的存储结构
 
-### 三、HashMap
+单向链表就是通过每个节点的指针指向下一个节点而链接起来的结构，最后一个节点的next指向null，单向循环链表和单向链表不同的是，最后一个节点的next指向head节点，形成一个环
+
+双向链表包含两个指针，pre指向前一个节点，next指向后一个节点，第一个节点head的pre指向null，最后一个节点tail的next指向null，双向循环链表和双向链表的不同在于，第一个节点的pre指向最后一个节点，最后一个节点的next指向第一个节点，也形成一个环，**LinkedList就是基于双向链表设计的**
+
+~~~java
+public class LinkedList<E>  extends  AbstractSequentialList<E>
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+~~~
+
+`LinkedList`是一个继承于`AbstractSequentialList`的双向循环链表，可以被当作堆栈、队列或双端队列进行操作
+
+LinkedList实现List接口，能对它进行队列操作
+
+LinkedList实现Deque接口，能将它当作双端队列使用
+
+LinkedList实现Cloneable接口，即覆盖了clone函数，能克隆
+
+LinkedList实现了Serializable接口。支持序列化
+
+**Node**
+
+~~~java
+    private static class Node<E> {
+        E item;
+        Node<E> next;
+        Node<E> prev;
+
+        Node(Node<E> prev, E element, Node<E> next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+~~~
+
+**构造函数**
+
+~~~java
+	transient int size = 0;
+    transient Node<E> first; //表示链表头部
+    transient Node<E> last; //表示链表尾部
+
+    public LinkedList() {}
+
+    public LinkedList(Collection<? extends E> c) {
+        this();
+        addAll(c);
+    }
+~~~
+
+**add**
+
+~~~java
+    public boolean add(E e) {
+        linkLast(e);
+        return true;
+    }
+
+    void linkLast(E e) {
+        final Node<E> l = last;  //指向链表尾部节点
+        final Node<E> newNode = new Node<>(l, e, null); //以尾部节点为前驱节点创建一个新节点
+        last = newNode; //将链表尾部指向新节点
+        if (l == null) //如果链表为空，该节点既是头节点也是尾节点
+            first = newNode;
+        else //链表不为空，将该节点作为原链表尾部的后继节点
+            l.next = newNode;
+        size++;
+        modCount++;
+    }
+
+    public void add(int index, E element) {
+        checkPositionIndex(index); //检查index
+
+        if (index == size) 
+            linkLast(element); //添加在链表尾部
+        else
+            linkBefore(element, node(index)); //添加在链表中间
+    }
+
+    Node<E> node(int index) {
+        // assert isElementIndex(index);
+
+        if (index < (size >> 1)) { //判断从前还是从后遍历
+            Node<E> x = first;
+            for (int i = 0; i < index; i++)
+                x = x.next;
+            return x;
+        } else {
+            Node<E> x = last;
+            for (int i = size - 1; i > index; i--)
+                x = x.prev;
+            return x;
+        }
+    }
+
+    void linkBefore(E e, Node<E> succ) {
+        // assert succ != null;
+        final Node<E> pred = succ.prev;
+        final Node<E> newNode = new Node<>(pred, e, succ);
+        succ.prev = newNode; //更新插入位置后节点的前驱节点
+        if (pred == null)
+            first = newNode;
+        else
+            pred.next = newNode;
+        size++;
+        modCount++;
+    }
+~~~
+
+**addAll**
+
+~~~java
+    public boolean addAll(Collection<? extends E> c) {
+        return addAll(size, c);
+    }
+
+    public boolean addAll(int index, Collection<? extends E> c) {
+        checkPositionIndex(index);
+
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        if (numNew == 0)
+            return false;
+
+        Node<E> pred, succ;
+        if (index == size) { //表示在尾部插入，前驱节点是last，后继节点是null
+            succ = null;
+            pred = last;
+        } else { //表示在中间插入，调用node()得到后继节点，以及前驱节点
+            succ = node(index);
+            pred = succ.prev;
+        }
+
+        for (Object o : a) { //遍历插入数据
+            @SuppressWarnings("unchecked") E e = (E) o;
+            Node<E> newNode = new Node<>(pred, e, null);
+            if (pred == null) //表示插入位置在头部
+                first = newNode;
+            else
+                pred.next = newNode;
+            pred = newNode;
+        }
+
+        if (succ == null) { //表示在尾部插入，更新last
+            last = pred;
+        } else { //表示在中间插入，更新前后节点把链表连接起来
+            pred.next = succ;
+            succ.prev = pred;
+        }
+
+        size += numNew;
+        modCount++;
+        return true;
+    }
+~~~
+
+### 四、HashMap
 
 数组具有遍历快，增删慢的特点。数组在堆中是一块连续的存储空间，遍历是数组的首地址是知道的，所以遍历快（时间复杂度为O(1)），增删慢是因为，当在中间插入或删除元素时，会造成该元素后面所有元素地址的改变，所以增删慢（时间复杂度O(n)）
 
