@@ -403,10 +403,11 @@ public HashMap(int initialCapacity, float loadFactor) {
         this.threshold = tableSizeFor(initialCapacity);
     }
 
+//寻找 >= cap 的最小的2的幂
 static final int tableSizeFor(int cap) {
-        int n = cap - 1;
-        n |= n >>> 1;
-        n |= n >>> 2;
+        int n = cap - 1; //防止cap已经是2的幂，结果将是cap的2倍
+        n |= n >>> 1; //让最高位1后边全部变成1
+        n |= n >>> 2; //结果再加1，得到2的幂次方
         n |= n >>> 4;
         n |= n >>> 8;
         n |= n >>> 16;
@@ -513,11 +514,24 @@ final TreeNode<K,V> getTreeNode(int h, Object k) {
         return putVal(hash(key), key, value, false, true);
     }
 
+    static final int hash(Object key) {
+        int h; //高16为不变，低16位于高16位异或作为最终的hash值
+        //     hash: 1111 1111 1111 1111 1010 1010 1010 1010  ^
+        //hash>>>16: 0000 0000 0000 0000 1111 1111 1111 1111
+        //           1111 1111 1111 1111 0101 0101 0101 0101
+        //原因：因为table的length都是2的幂次方，因此计算的index仅于hash的低n位有关
+        //      高低位异或减少碰撞
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
     final V putVal(int hash, K key, V value, boolean onlyIfAbsent, boolean evict) {
         Node<K,V>[] tab; Node<K,V> p; int n, i;
         if ((tab = table) == null || (n = tab.length) == 0) //检查table是否为空或者length是0，如果是则调用resize进行初始化
             n = (tab = resize()).length;
         //通过hash值计算索引位置，将索引位置的头节点赋值给p，如果p为空则直接在该索引位置新增一个节点
+        //hash和length-1进行与操作计算index，相当于取低位
+        //	  hash: 0101 0101  &
+        //length-1: 0000 1111  = 0000 0101
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
         else {
