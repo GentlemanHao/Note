@@ -20,10 +20,14 @@ Map接口有三个比较重要的实现类，`HashMap`、`TreeMap`、`HashTable`
 
 ### 二、ArrayList
 
+对于元素查询来说，ArrayList优于LinkedList，因为LinkedList要移动指针。对于添加和删除操作，LinkedList优于ArrayList，因为ArrayList要移动数据。
+
 **构造函数**
 
 ```java
-    public ArrayList(int initialCapacity) {
+private static final int DEFAULT_CAPACITY = 10; //默认容量
+
+public ArrayList(int initialCapacity) {
         if (initialCapacity > 0) {
           	//初始化elementData容量
             this.elementData = new Object[initialCapacity];
