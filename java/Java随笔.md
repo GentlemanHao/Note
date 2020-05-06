@@ -64,6 +64,26 @@ sleep必须传入时间，wait可传可不传，不传的话只有notify或notif
 
 join方法通常是保证线程见顺序调度的一个方法，
 
+**Android的几种进程**
+
+前台进程：与用户正在交互的`Activity`或`Activity`用到的`Service`
+
+可见进程：处于暂停状态的`Activity`或者绑定在其上的`Service`，即被用户可见，但由于失去了焦点不能与用户交互
+
+服务进程：使用`startService`启动的`Service`，虽不可见，但却是用户关心的，如音乐和下载
+
+后台进程：已执行`onStop`而停止的进程，不是用户关心的
+
+空进程：
+
+
+
+
+
+
+
+
+
 
 
 
