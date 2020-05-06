@@ -2,11 +2,11 @@
 
 保证在**同一时刻**最多只有**一个线程**执行该段代码，以达到并发安全的效果。
 
-JVM基于进入和退出Monitor对象来实现方法同步和代码块同步
+JVM基于进入和退出`Monitor`对象来实现方法同步和代码块同步
 
-方法级同步是隐式，即无需通过字节码指令来控制，它实现在方法调用和返回操作之中，JVM可以从方法常量池中的方法表结构中的ACC_SYNCHRONIZED访问标志区分一个方法是否是同步方法，当方法调用时，调用指令会检查方法的ACC_SYNCHRONIZED访问标志是否被设置，如果设置了，执行线程将先持有monitor，然后再执行方法，最后在方法完成时释放monitor
+方法级同步是隐式，即无需通过字节码指令来控制，它实现在方法调用和返回操作之中，JVM可以从方法常量池中的方法表结构中的`ACC_SYNCHRONIZED`访问标志区分一个方法是否是同步方法，当方法调用时，调用指令会检查方法的`ACC_SYNCHRONIZED`访问标志是否被设置，如果设置了，执行线程将先持有`monitor`，然后再执行方法，最后在方法完成时释放`monitor`
 
-代码块同步是利用monitorenter和monitorexit两个字节码指令，它们分别位于同步代码块的开始和结束位置，当JVM执行到monitorenter指令时，当前线程试图获取monitor对象的所有权，如果未加锁或已经被当前线程持有，就把锁的计数器 +1 ，当执行monitorexit指令时，锁计数器 -1 ，当锁计数器为0时，该锁就被释放，如果获取monitor对象失败，该线程会进入阻塞状态，直到其他线程释放锁
+代码块同步是利用`monitorenter`和`monitorexit`两个字节码指令，它们分别位于同步代码块的开始和结束位置，当JVM执行到`monitorenter`指令时，当前线程试图获取`monitor`对象的所有权，如果未加锁或已经被当前线程持有，就把锁的计数器 +1 ，当执行`monitorexit`指令时，锁计数器 -1 ，当锁计数器为0时，该锁就被释放，如果获取`monitor`对象失败，该线程会进入阻塞状态，直到其他线程释放锁
 
 **Synchronized的两个用法**
 
@@ -30,7 +30,7 @@ JVM基于进入和退出Monitor对象来实现方法同步和代码块同步
 
 
 
-### 线程池ThreadPoolExecutor
+### 线程池`ThreadPoolExecutor`
 
 **构造参数：**
 
@@ -48,7 +48,7 @@ ThreadPoolExecutor(
 
 四种拒绝策略：`DiscardOldestPolicy、DiscardPolicy、AbortPolicy、CallerRunsPolicy`
 
-自定义拒绝策略接口：RejectedExecutionHandler
+自定义拒绝策略接口：`RejectedExecutionHandler`
 
 线程池的状态：RUNNING、SHUTDOWN、STOP、TIDYING、TERMINATED
 

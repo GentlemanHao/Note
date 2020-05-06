@@ -29,7 +29,7 @@ int是基本类型，Integer是int的包装类型，包装类型可以有一些�
 **包装类型：**Boolean    Character    Byte    Short    Integer    Long    Float    Double
 
 ~~~java
-				Integer a = new Integer(3);
+		Integer a = new Integer(3);
         Integer b = 3;                  // 将3自动装箱成Integer类型
         int c = 3;
         System.out.println(a == b);     // false 两个引用没有引用同一对象
@@ -37,7 +37,7 @@ int是基本类型，Integer是int的包装类型，包装类型可以有一些�
 ~~~
 
 ~~~java
-				Integer f1 = 100, f2 = 100, f3 = 150, f4 = 150;
+		Integer f1 = 100, f2 = 100, f3 = 150, f4 = 150;
         System.out.println(f1 == f2); //true
         System.out.println(f3 == f4); //false
 //自动装箱时，使用的时Integer的valueof方法，当int在-128到127之间时，并不会new一个新的对象，而是直接使用常量池中的Integer
