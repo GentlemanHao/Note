@@ -42,12 +42,10 @@ suspend fun Start(block: suspend CoroutineScope.() -> Unit) = coroutineScope {
     block.invoke(this)
 }
 
-suspend fun <T> Io(block: suspend CoroutineScope.() -> T): T? {
-    var data: T? = null
-    withContext(Dispatchers.IO) {
-        data = block.invoke(this)
+suspend fun <T> Io(block: suspend CoroutineScope.() -> T): T {
+    return withContext(Dispatchers.IO) {
+        block.invoke(this)
     }
-    return data
 }
 ~~~
 

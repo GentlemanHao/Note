@@ -480,7 +480,7 @@ final Node<K,V> getNode(int hash, Object key) {
             if (first.hash == hash && // always check first node
                 ((k = first.key) == key || (key != null && key.equals(k))))
                 return first;
-            //如果first不是目标节点，并且first的next节点不为空则继续便利
+            //如果first不是目标节点，并且first的next节点不为空则继续遍历
             if ((e = first.next) != null) {
                 if (first instanceof TreeNode)
                     //如果是红黑树节点，则调用红黑树查找目标的方法getTreeNode
