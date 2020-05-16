@@ -21,8 +21,8 @@ Dispatcher核心属性
 
 ~~~kotlin
  var maxRequests = 64
-var maxRequestsPerHost = 5
-val executorService: ExecutorService
+ var maxRequestsPerHost = 5
+ val executorService: ExecutorService
   /** Ready async calls in the order they'll be run. */
   private val readyAsyncCalls = ArrayDeque<AsyncCall>()
   /** Running asynchronous calls. Includes canceled calls that haven't finished yet. */
@@ -82,7 +82,88 @@ dispatcher.enqueue()方法将call添加到readyAsyncCalls中，然后执行promo
   }
 ~~~
 
+执行AsyncCall的run()方法，调用getResponseWithInterceptorChain()，初始化各种拦截器的集合，构建RealInterceptorChain，并调用chain.proceed(originalRequest)
 
+~~~kotlin
+  internal fun getResponseWithInterceptorChain(): Response {
+    // Build a full stack of interceptors.
+    val interceptors = mutableListOf<Interceptor>()
+    interceptors += client.interceptors
+    interceptors += RetryAndFollowUpInterceptor(client) //重试拦截器
+    interceptors += BridgeInterceptor(client.cookieJar) //桥接拦截器
+    interceptors += CacheInterceptor(client.cache) //缓存拦截器
+    interceptors += ConnectInterceptor //连接拦截器，连接服务器，http包装
+    if (!forWebSocket) {
+      interceptors += client.networkInterceptors //网络拦截器
+    }
+    interceptors += CallServerInterceptor(forWebSocket) //服务拦截器
+
+    val chain = RealInterceptorChain(
+        call = this,
+        interceptors = interceptors,
+        index = 0,
+        exchange = null,
+        request = originalRequest,
+        connectTimeoutMillis = client.connectTimeoutMillis,
+        readTimeoutMillis = client.readTimeoutMillis,
+        writeTimeoutMillis = client.writeTimeoutMillis
+    )
+
+    var calledNoMoreExchanges = false
+    try {
+      val response = chain.proceed(originalRequest)
+      if (isCanceled()) {
+        response.closeQuietly()
+        throw IOException("Canceled")
+      }
+      return response
+    } catch (e: IOException) {
+      calledNoMoreExchanges = true
+      throw noMoreExchanges(e) as Throwable
+    } finally {
+      if (!calledNoMoreExchanges) {
+        noMoreExchanges(null)
+      }
+    }
+  }
+~~~
+
+
+
+~~~kotlin
+  override fun proceed(request: Request): Response {
+    check(index < interceptors.size)
+
+    calls++
+
+    if (exchange != null) {
+      check(exchange.finder.sameHostAndPort(request.url)) {
+        "network interceptor ${interceptors[index - 1]} must retain the same host and port"
+      }
+      check(calls == 1) {
+        "network interceptor ${interceptors[index - 1]} must call proceed() exactly once"
+      }
+    }
+
+    // Call the next interceptor in the chain.
+    val next = copy(index = index + 1, request = request)
+    val interceptor = interceptors[index]
+
+    @Suppress("USELESS_ELVIS")
+    val response = interceptor.intercept(next) ?: throw NullPointerException(
+        "interceptor $interceptor returned null")
+
+    if (exchange != null) {
+      check(index + 1 >= interceptors.size || next.calls == 1) {
+        "network interceptor $interceptor must call proceed() exactly once"
+      }
+    }
+
+    check(response.body != null) { "interceptor $interceptor returned a response with no body" }
+
+    return response
+  }
+~~~
 
 
 
