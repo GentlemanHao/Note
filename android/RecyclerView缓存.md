@@ -8,8 +8,6 @@
 
 **mHiddenViews**：保存在添加或者删除数据或其他操作，保存在屏幕内可见的带动画子View
 
-
-
 缓存机制：
 
 首先判断是不是执行动画的预布局，是的话则尝试从`mChangedScrap`中获取
@@ -22,9 +20,19 @@
 
 还没有则通过`mAdapter.createViewHolder`创建新的
 
-
-
 https://juejin.im/post/5db7eaa96fb9a0203f6f9ca6
+
+
+
+**拉勾课程**
+
+RecyclerView的缓存核心代码在内部类Recycler中完成，主要用来缓存屏幕内的ViewHolder和屏幕外的ViewHolder
+
+![](https://s0.lgstatic.com/i/image/M00/09/9D/Ciqc1F68ukSAZT3uAAD9_pc55Io230.png)
+
+缓存共分为4级
+
+![](https://s0.lgstatic.com/i/image/M00/09/9D/Ciqc1F68ukuAM0LVAACHb_a34AY925.png)
 
 
 
