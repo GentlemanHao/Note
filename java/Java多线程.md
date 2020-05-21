@@ -1,3 +1,25 @@
+### Thread
+
+~~~java
+    public enum State {
+        NEW,  //新建线程，没有调start()方法
+
+        RUNNABLE,  //就绪（ready）和运行中（running）
+
+        BLOCKED,  //表示线程阻塞于锁
+
+        WAITING,  //等待其他线程做出一些特定动作
+
+        TIMED_WAITING,  //不同于WAITING，可以在指定的时间后自行返回
+
+        TERMINATED;  //执行完毕
+    }
+~~~
+
+![](https://img-blog.csdnimg.cn/20181120173640764.jpeg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3BhbmdlMTk5MQ==,size_16,color_FFFFFF,t_70)
+
+
+
 ### Synchronized
 
 保证在**同一时刻**最多只有**一个线程**执行该段代码，以达到并发安全的效果。
