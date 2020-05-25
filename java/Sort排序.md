@@ -20,3 +20,47 @@ public static void sort(int[] nums) {
     }
 ~~~
 
+
+
+~~~java
+    public static void quickSort(int[] arr, int start, int end) {
+        if (start > end) return;
+        int left = start;
+        int right = end;
+        int base = arr[left];
+
+        while (left < right) {
+            while (arr[right] >= base & left < right) {
+                right--;
+            }
+
+            while (arr[left] <= base & left < right) {
+                left++;
+            }
+
+            if (left < right) {
+                swap(arr, left, right);
+            }
+        }
+        swap(arr, start, left);
+
+        quickSort(arr, start, left - 1);
+        quickSort(arr, right + 1, end);
+    }
+
+    public static void swap(int[] arr, int p1, int p2) {
+        int tmp = arr[p1];
+        arr[p1] = arr[p2];
+        arr[p2] = tmp;
+    }
+
+    public static void printArr(int[] arr) {
+        for (int value : arr) {
+            System.out.print(value + " ");
+        }
+        System.out.println();
+    }
+~~~
+
+
+
