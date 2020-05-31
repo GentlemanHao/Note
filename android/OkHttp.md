@@ -165,7 +165,9 @@ dispatcher.enqueue()方法将call添加到readyAsyncCalls中，然后执行promo
   }
 ~~~
 
+### OkHttp拦截器
 
+<img src="https://images2018.cnblogs.com/blog/1105320/201804/1105320-20180403182754939-2128769288.png" style="zoom:80%;" />
 
 
 
