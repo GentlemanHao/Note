@@ -36,16 +36,3 @@ private suspend fun getCompany(): String? {
 
 ~~~
 
-简单封装
-~~~kotlin
-suspend fun Start(block: suspend CoroutineScope.() -> Unit) = coroutineScope {
-    block.invoke(this)
-}
-
-suspend fun <T> Io(block: suspend CoroutineScope.() -> T): T {
-    return withContext(Dispatchers.IO) {
-        block.invoke(this)
-    }
-}
-~~~
-
